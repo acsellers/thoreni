@@ -1,0 +1,14 @@
+Stage 1 (mvp)
+  Colon operators in urls (Get, Put, Post, etc.)
+    :key, :id, :hash, :id{hex}, etc.
+  Restful auto-loading
+    Full and semi
+  Need a way to set headers in Contextable
+  Actually forwarding requests from a ServeMux to the router
+  Queryable
+Stage 2 (beta1)
+  RouteMap interface
+  RouteMap > ServeMux
+Stage 3 (beta2)
+  Mount a router on a router (bow-chicka-wow-wow)
+  Mount other routers/mux's on a router

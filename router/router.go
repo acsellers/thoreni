@@ -1,5 +1,8 @@
+// Package router implements a fairly comprehensive URL router
 package router
 
+// Router is the main interace to the functionality, you will draw your routes directly on the router
+// or on a namespace that was drawn on the router
 type Router struct {
 	Root      *Namespace
 	generated bool
@@ -9,7 +12,7 @@ type Router struct {
 
 func NewRouter() *Router {
 	r := new(Router)
-	r.Root = new(Namespace) // appending to nil arrays works, plus empty string is what name/rootedName should be
+	r.Root = new(Namespace)
 	r.NotFound = Default404
 
 	return r

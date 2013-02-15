@@ -1,0 +1,15 @@
+Stage 0 (dev)
+  ResponseWriter in Renderable
+  Render templates by name (vanilla)
+  Render templates by name (haml)
+  Render partials by name
+  Render by request format
+  Add helpers dynamically
+Stage 1 (mvp)
+  Render templates by name (erb)
+  Docs on build parsers
+Stage 2 (beta1)
+  Minification
+Stage 3 (beta2)
+  Sass/Less/Coffee/Typescript/Dart compilation
+  Css/Sass/JS filters in views
