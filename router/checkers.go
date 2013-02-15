@@ -14,13 +14,16 @@ type SimpleChecker struct {
 }
 
 func (sc SimpleChecker) RespondsTo(rq Requestish) bool {
-	return rq.Method() == sc.method && strings.HasPrefix(rq.Path(), sc.pattern)
+	return (rq.Method() == sc.method || sc.method == "*") && strings.HasPrefix(rq.Path(), sc.pattern)
 }
 func (sc SimpleChecker) Surety(rq Requestish) int {
 	if sc.RespondsTo(rq) {
-		return len(sc.pattern)
+		return len(sc.pattern) + 1
 	}
-	return 1
+	if sc.method == "*" {
+		return 1
+	}
+	return 2
 }
 
 type RegexChecker struct {

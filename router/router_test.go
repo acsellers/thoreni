@@ -71,29 +71,114 @@ func TestTwoGetsReversed(t *testing.T) {
 		}
 	}
 }
-func newTestContext(req Requestish) *Contextable {
-	return &Contextable{Renderable: new(testContext), Requestish: req}
+
+func TestBasicPost(t *testing.T) {
+	r := NewRouter()
+	r.Post("/", func(ctx *Contextable) {
+		ctx.Render("testing")
+	})
+
+	testReq := &testRequestish{path: "/", method: "POST"}
+	tc := newTestContext(testReq)
+	r.Match(testReq)(tc)
+	if atc, ok := tc.Renderable.(*testContext); ok {
+		if atc.rendered != "testing" {
+			t.Fail()
+		}
+	}
 }
 
-type testContext struct {
-	rendered string
+func TestGetAndPost(t *testing.T) {
+	r := NewRouter()
+	r.Get("/", func(ctx *Contextable) {
+		ctx.Render("get")
+	})
+
+	r.Post("/", func(ctx *Contextable) {
+		ctx.Render("post")
+	})
+
+	testReq := &testRequestish{path: "/", method: "POST"}
+	tc := newTestContext(testReq)
+	r.Match(testReq)(tc)
+	if atc, ok := tc.Renderable.(*testContext); ok {
+		if atc.rendered != "post" {
+			t.Fail()
+		}
+	}
+
+	testReq2 := &testRequestish{path: "/", method: "GET"}
+	tc2 := newTestContext(testReq2)
+	r.Match(testReq2)(tc2)
+	if atc, ok := tc2.Renderable.(*testContext); ok {
+		if atc.rendered != "get" {
+			t.Fail()
+		}
+	}
 }
 
-func (t *testContext) Render(s string) {
-	t.rendered = s
+func TestBasicDelete(t *testing.T) {
+	r := NewRouter()
+	r.Delete("/", func(ctx *Contextable) {
+		ctx.Render("delete testing")
+	})
+
+	testReq := &testRequestish{path: "/", method: "DELETE"}
+	tc := newTestContext(testReq)
+	r.Match(testReq)(tc)
+	if atc, ok := tc.Renderable.(*testContext); ok {
+		if atc.rendered != "delete testing" {
+			t.Fail()
+		}
+	}
 }
 
-func (t *testContext) Write(p []byte) (n int, err error) {
-	return 0, nil
+func TestBasicPut(t *testing.T) {
+	r := NewRouter()
+	r.Put("/", func(ctx *Contextable) {
+		ctx.Render("put testing")
+	})
+
+	testReq := &testRequestish{path: "/", method: "PUT"}
+	tc := newTestContext(testReq)
+	r.Match(testReq)(tc)
+	if atc, ok := tc.Renderable.(*testContext); ok {
+		if atc.rendered != "put testing" {
+			t.Fail()
+		}
+	}
 }
 
-type testRequestish struct {
-	path, method string
-}
+func TestBasicAny(t *testing.T) {
+	r := NewRouter()
+	r.Any("/", func(ctx *Contextable) {
+		ctx.Render("any testing")
+	})
 
-func (tr testRequestish) Path() string {
-	return tr.path
-}
-func (tr testRequestish) Method() string {
-	return tr.method
+	testReq := &testRequestish{path: "/", method: "POST"}
+	tc := newTestContext(testReq)
+	r.Match(testReq)(tc)
+	if atc, ok := tc.Renderable.(*testContext); ok {
+		if atc.rendered != "any testing" {
+			t.Fail()
+		}
+	}
+
+	testReq2 := &testRequestish{path: "/", method: "GET"}
+	tc2 := newTestContext(testReq2)
+	r.Match(testReq2)(tc2)
+	if atc, ok := tc2.Renderable.(*testContext); ok {
+		if atc.rendered != "any testing" {
+			t.Fail()
+		}
+	}
+
+	testReq3 := &testRequestish{path: "/", method: "PUT"}
+	tc3 := newTestContext(testReq3)
+	r.Match(testReq3)(tc3)
+	if atc, ok := tc3.Renderable.(*testContext); ok {
+		if atc.rendered != "any testing" {
+			t.Fail()
+		}
+	}
 }
