@@ -18,6 +18,22 @@ func TestBasicGet(t *testing.T) {
 	}
 }
 
+func TestBasicGetInvalid(t *testing.T) {
+	r := NewRouter()
+	r.Get("/asdf", func(ctx *Contextable) {
+		ctx.Render("testing")
+	})
+
+	testReq := &testRequestish{path: "/", method: "GET"}
+	tc := newTestContext(testReq)
+	r.Match(testReq)(tc)
+	if atc, ok := tc.Renderable.(*testContext); ok {
+		if atc.rendered != "Not Found" {
+			t.Fail()
+		}
+	}
+}
+
 func TestTwoGets(t *testing.T) {
 	r := NewRouter()
 	r.Get("/asdf", func(ctx *Contextable) {
