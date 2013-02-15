@@ -3,6 +3,16 @@ package router
 import "regexp"
 import "strings"
 
+// MatchChecker is the interface that is needed for the struct that is used to determine 
+// whether the Route that the Router is looking at should be matched, and the match strength
+// for that Route.
+//
+// Responds_to is permissive in how matches are counted. A "/" handler would match all routes
+// so if there is a basic match, then it is not a problem to just respond with true, Surety
+// is where you should determine how strong of a match it is. Matching actions should be fast,
+// Surety actions can be slower.
+//
+// 
 type MatchChecker interface {
 	RespondsTo(Requestish) bool
 	Surety(Requestish) int
@@ -17,13 +27,15 @@ func (sc SimpleChecker) RespondsTo(rq Requestish) bool {
 	return (rq.Method() == sc.method || sc.method == "*") && strings.HasPrefix(rq.Path(), sc.pattern)
 }
 func (sc SimpleChecker) Surety(rq Requestish) int {
-	if sc.RespondsTo(rq) {
-		return len(sc.pattern) + 1
-	}
+	strength := 1
 	if sc.method == "*" {
-		return 1
+		strength = 0
 	}
-	return 2
+
+	if sc.RespondsTo(rq) {
+		return len(sc.pattern)*2 + strength
+	}
+	return 0
 }
 
 type RegexChecker struct {
