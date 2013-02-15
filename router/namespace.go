@@ -24,28 +24,26 @@ func NewNamespace(name string, parent *Namespace) (newNS *Namespace) {
 	return
 }
 
-func (nm *Namespace) Match(req Requestish) (response RoutingFunc) {
+func (nm *Namespace) Match(req Requestish) (response []*Endpoint) {
 	for _, namespace := range nm.Namespaces {
 		if namespace.Contains(req) {
 			if gottenResponse, ok := namespace.Serves(req); ok {
-				response = gottenResponse
-				return
+				response = append(response, gottenResponse...)
 			}
 		}
 	}
 	for _, endpoint := range nm.Endpoints {
-		if gottenResponse, ok := endpoint.Serves(req); ok {
-			response = gottenResponse
-			return
+		if ok := endpoint.Serves(req); ok {
+			response = append(response, endpoint)
 		}
 	}
-	return nil
+	return
 }
 func (nm *Namespace) Contains(req Requestish) bool {
 	return strings.HasPrefix(req.Path(), nm.rootedName)
 }
-func (nm *Namespace) Serves(req Requestish) (response RoutingFunc, found bool) {
+func (nm *Namespace) Serves(req Requestish) (response []*Endpoint, found bool) {
 	response = nm.Match(req)
-	found = response != nil
+	found = len(response) > 0
 	return
 }

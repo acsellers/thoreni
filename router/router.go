@@ -16,8 +16,20 @@ func NewRouter() *Router {
 }
 
 func (router *Router) Match(req Requestish) RoutingFunc {
+	matchingResponses := make([]*Endpoint, 0)
 	if response, found := router.Root.Serves(req); found {
-		return response
+		matchingResponses = append(matchingResponses, response...)
+	}
+
+	if len(matchingResponses) > 0 {
+		var surestIndex, surestLength int
+		for index, endpoint := range matchingResponses {
+			if endpoint.Surety(req) > surestLength {
+				surestLength = endpoint.Surety(req)
+				surestIndex = index
+			}
+		}
+		return matchingResponses[surestIndex].RoutingFunc
 	}
 	return router.NotFound
 }

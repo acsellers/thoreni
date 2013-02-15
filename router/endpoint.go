@@ -7,9 +7,8 @@ type Endpoint struct {
 	rootedName string
 }
 
-func (ep *Endpoint) Serves(req Requestish) (response RoutingFunc, found bool) {
+func (ep *Endpoint) Serves(req Requestish) (found bool) {
 	if ep.RespondsTo(req) {
-		response = ep.RoutingFunc
 		found = true
 	}
 	return
