@@ -1,7 +1,10 @@
 package router
 
+import "fmt"
 import "regexp"
 import "strings"
+
+var colonChecker = regexp.MustCompile(":id|:key|:slug")
 
 // MatchChecker is the interface that is needed for the struct that is used to determine 
 // whether the Route that the Router is looking at should be matched, and the match strength
@@ -39,21 +42,33 @@ func (sc SimpleChecker) Surety(rq Requestish) int {
 }
 
 type RegexChecker struct {
-	simple *SimpleChecker
+	method string
 	regex  *regexp.Regexp
 }
 
-func NewRegexChecker(pattern, method, requestRegex string) (*RegexChecker, error) {
-	regex, err := regexp.Compile(requestRegex)
-	rc := &RegexChecker{simple: &SimpleChecker{pattern: pattern, method: method}, regex: regex}
-	return rc, err
+func NewRegexChecker(method, requestRegex string) *RegexChecker {
+	regex := regexp.MustCompile(ReplaceColonOperators(requestRegex))
+	rc := &RegexChecker{method: method, regex: regex}
+	return rc
 }
 
 func (rc RegexChecker) RespondsTo(rq Requestish) bool {
-	return true
+	return (rc.method == rq.Method() || rc.method == "*") && rc.regex.MatchString(rq.Path())
 }
 
 //TODO: this is not taking into account the matched length, fix when we start dealing with the regex
 func (rc RegexChecker) Surety(rq Requestish) int {
-	return rc.simple.Surety(rq)
+	return len(rc.regex.FindString(rq.Path())) + 1
+}
+
+func ReplaceColonOperators(pre string) (post string) {
+	post = strings.Replace(pre, ":id", "([0-9]+)", -1)
+	post = strings.Replace(post, ":key", "([0-9a-fA-F]+)", -1)
+	post = strings.Replace(post, ":slug", "([a-fA-F0-9_-]+)", -1)
+	post = fmt.Sprintf("^%s", post)
+	return
+}
+
+func hasColonOperators(path string) bool {
+	return colonChecker.MatchString(path)
 }

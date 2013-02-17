@@ -1,31 +1,33 @@
 package router
 
 func (router *Router) Get(path string, handler RoutingFunc) {
-	getChecker := &SimpleChecker{pattern: path, method: "GET"}
-	getEndpoint := &Endpoint{MatchChecker: getChecker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.Root.Endpoints = append(router.Root.Endpoints, getEndpoint)
+	router.AddBuiltinEndpoint(path, "GET", handler)
 }
 
 func (router *Router) Put(path string, handler RoutingFunc) {
-	putChecker := &SimpleChecker{pattern: path, method: "PUT"}
-	putEndpoint := &Endpoint{MatchChecker: putChecker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.Root.Endpoints = append(router.Root.Endpoints, putEndpoint)
+	router.AddBuiltinEndpoint(path, "PUT", handler)
 }
 
 func (router *Router) Post(path string, handler RoutingFunc) {
-	postChecker := &SimpleChecker{pattern: path, method: "POST"}
-	postEndpoint := &Endpoint{MatchChecker: postChecker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.Root.Endpoints = append(router.Root.Endpoints, postEndpoint)
+	router.AddBuiltinEndpoint(path, "POST", handler)
+}
+
+func (router *Router) Update(path string, handler RoutingFunc) {
+	router.AddBuiltinEndpoint(path, "UPDATE", handler)
+}
+
+func (router *Router) Head(path string, handler RoutingFunc) {
+	router.AddBuiltinEndpoint(path, "HEAD", handler)
+}
+
+func (router *Router) Options(path string, handler RoutingFunc) {
+	router.AddBuiltinEndpoint(path, "OPTIONS", handler)
 }
 
 func (router *Router) Delete(path string, handler RoutingFunc) {
-	deleteChecker := &SimpleChecker{pattern: path, method: "DELETE"}
-	deleteEndpoint := &Endpoint{MatchChecker: deleteChecker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.Root.Endpoints = append(router.Root.Endpoints, deleteEndpoint)
+	router.AddBuiltinEndpoint(path, "DELETE", handler)
 }
 
 func (router *Router) Any(path string, handler RoutingFunc) {
-	deleteChecker := &SimpleChecker{pattern: path, method: "*"}
-	deleteEndpoint := &Endpoint{MatchChecker: deleteChecker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.Root.Endpoints = append(router.Root.Endpoints, deleteEndpoint)
+	router.AddBuiltinEndpoint(path, "*", handler)
 }

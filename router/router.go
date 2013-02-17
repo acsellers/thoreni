@@ -52,3 +52,15 @@ func (router *Router) Match(req Requestish) RoutingFunc {
 	}
 	return router.NotFound
 }
+
+func (router *Router) AddBuiltinEndpoint(path, method string, handler RoutingFunc) {
+	if hasColonOperators(path) {
+		regexChecker := NewRegexChecker(method, path)
+		endpoint := &Endpoint{MatchChecker: regexChecker, RoutingFunc: handler, Name: path, rootedName: path}
+		router.Root.Endpoints = append(router.Root.Endpoints, endpoint)
+		return
+	}
+	checker := &SimpleChecker{pattern: path, method: method}
+	endpoint := &Endpoint{MatchChecker: checker, RoutingFunc: handler, Name: path, rootedName: path}
+	router.Root.Endpoints = append(router.Root.Endpoints, endpoint)
+}
