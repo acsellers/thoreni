@@ -13,9 +13,8 @@ var colonChecker = regexp.MustCompile(":id|:key|:slug|:name")
 // Responds_to is permissive in how matches are counted. A "/" handler would match all routes
 // so if there is a basic match, then it is not a problem to just respond with true, Surety
 // is where you should determine how strong of a match it is. Matching actions should be fast,
-// Surety actions can be slower.
-//
-// 
+// Surety actions can be slower. Exact method matchers will rank 1 higher than matches on the any 
+// method, we do this by doubling the length of the match.
 type MatchChecker interface {
 	RespondsTo(Requestish) bool
 	Surety(Requestish) int
@@ -58,7 +57,7 @@ func (rc RegexChecker) RespondsTo(rq Requestish) bool {
 
 //TODO: this is not taking into account the matched length, fix when we start dealing with the regex
 func (rc RegexChecker) Surety(rq Requestish) int {
-	return len(rc.regex.FindString(rq.Path())) + 1
+	return len(rc.regex.FindString(rq.Path()))*2 + 1
 }
 
 func ReplaceColonOperators(pre string) (post string) {
