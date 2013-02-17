@@ -12,7 +12,7 @@ type Namespace struct {
 	rootedName string
 }
 
-func NewNamespace(name string, parent *Namespace) (newNS *Namespace) {
+func newNamespace(name string, parent *Namespace) (newNS *Namespace) {
 	newNS = new(Namespace)
 	newNS.Name = name
 	if parent == nil {
@@ -46,4 +46,16 @@ func (nm *Namespace) Serves(req Requestish) (response []*Endpoint, found bool) {
 	response = nm.Match(req)
 	found = len(response) > 0
 	return
+}
+
+func (namespace *Namespace) AddBuiltinEndpoint(path, method string, handler RoutingFunc) {
+	if hasColonOperators(path) {
+		regexChecker := NewRegexChecker(method, path)
+		endpoint := &Endpoint{MatchChecker: regexChecker, RoutingFunc: handler, Name: path, rootedName: namespace.rootedName + path}
+		namespace.Endpoints = append(namespace.Endpoints, endpoint)
+		return
+	}
+	checker := &SimpleChecker{pattern: path, method: method}
+	endpoint := &Endpoint{MatchChecker: checker, RoutingFunc: handler, Name: path, rootedName: namespace.rootedName + path}
+	namespace.Endpoints = append(namespace.Endpoints, endpoint)
 }

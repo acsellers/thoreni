@@ -16,7 +16,7 @@ package router
 // add in diffent bits of code to set variables, check cookie values to disallow access, 
 // redirect requests to other paths, and other similar actions.
 type Router struct {
-	Root      *Namespace
+	root      *Namespace
 	generated bool
 	//internalMap *RouteMap
 	NotFound RoutingFunc
@@ -25,7 +25,8 @@ type Router struct {
 // NewRouter returns a new Router
 func NewRouter() *Router {
 	r := new(Router)
-	r.Root = new(Namespace)
+	r.root = newNamespace("", nil)
+
 	r.NotFound = Default404
 
 	return r
@@ -36,7 +37,7 @@ func NewRouter() *Router {
 // routes defined.
 func (router *Router) Match(req Requestish) RoutingFunc {
 	matchingResponses := make([]*Endpoint, 0)
-	if response, found := router.Root.Serves(req); found {
+	if response, found := router.root.Serves(req); found {
 		matchingResponses = append(matchingResponses, response...)
 	}
 
@@ -57,10 +58,10 @@ func (router *Router) AddBuiltinEndpoint(path, method string, handler RoutingFun
 	if hasColonOperators(path) {
 		regexChecker := NewRegexChecker(method, path)
 		endpoint := &Endpoint{MatchChecker: regexChecker, RoutingFunc: handler, Name: path, rootedName: path}
-		router.Root.Endpoints = append(router.Root.Endpoints, endpoint)
+		router.root.Endpoints = append(router.root.Endpoints, endpoint)
 		return
 	}
 	checker := &SimpleChecker{pattern: path, method: method}
 	endpoint := &Endpoint{MatchChecker: checker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.Root.Endpoints = append(router.Root.Endpoints, endpoint)
+	router.root.Endpoints = append(router.root.Endpoints, endpoint)
 }
