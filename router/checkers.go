@@ -4,7 +4,7 @@ import "fmt"
 import "regexp"
 import "strings"
 
-var colonChecker = regexp.MustCompile(":id|:key|:slug")
+var colonChecker = regexp.MustCompile(":id|:key|:slug|:name")
 
 // MatchChecker is the interface that is needed for the struct that is used to determine 
 // whether the Route that the Router is looking at should be matched, and the match strength
@@ -65,6 +65,7 @@ func ReplaceColonOperators(pre string) (post string) {
 	post = strings.Replace(pre, ":id", "([0-9]+)", -1)
 	post = strings.Replace(post, ":key", "([0-9a-fA-F]+)", -1)
 	post = strings.Replace(post, ":slug", "([a-fA-F0-9_-]+)", -1)
+	post = strings.Replace(post, ":name", "([^/]+)", -1)
 	post = fmt.Sprintf("^%s", post)
 	return
 }

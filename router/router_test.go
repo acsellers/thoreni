@@ -452,3 +452,52 @@ func TestslugColorOperator2(t *testing.T) {
 		}
 	}
 }
+
+func TestnameColorOperator2(t *testing.T) {
+	r := NewRouter()
+	r.Get("/a/:name$", func(ctx *Contextable) {
+		ctx.Render("name testing")
+	})
+
+	testReq1 := &testRequestish{path: "/", method: "GET"}
+	tc1 := newTestContext(testReq1)
+	r.Match(testReq1)(tc1)
+	if atc, ok := tc1.Renderable.(*testContext); ok {
+		if atc.rendered == "name testing" {
+			t.Fatal("name Testing, invalname match")
+		}
+	}
+
+	testReq2 := &testRequestish{path: "/a/123abcef", method: "GET"}
+	tc2 := newTestContext(testReq2)
+	r.Match(testReq2)(tc2)
+	if atc, ok := tc2.Renderable.(*testContext); ok {
+		if atc.rendered != "name testing" {
+			t.Fatal("name Testing, valname match")
+		}
+	}
+	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	tc3 := newTestContext(testReq3)
+	r.Match(testReq3)(tc3)
+	if atc, ok := tc3.Renderable.(*testContext); ok {
+		if atc.rendered != "name testing" {
+			t.Fatal("name Testing, invalname match (second)")
+		}
+	}
+	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	tc4 := newTestContext(testReq4)
+	r.Match(testReq4)(tc4)
+	if atc, ok := tc4.Renderable.(*testContext); ok {
+		if atc.rendered != "name testing" {
+			t.Fatal("name Testing, invalname match (third)")
+		}
+	}
+	testReq5 := &testRequestish{path: "/a/123arel/t/asdf", method: "GET"}
+	tc5 := newTestContext(testReq5)
+	r.Match(testReq5)(tc5)
+	if atc, ok := tc5.Renderable.(*testContext); ok {
+		if atc.rendered != "name testing" {
+			t.Fatal("name Testing, invalname match (third)")
+		}
+	}
+}
