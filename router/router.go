@@ -58,10 +58,10 @@ func (router *Router) AddBuiltinEndpoint(path, method string, handler RoutingFun
 	if hasColonOperators(path) {
 		regexChecker := NewRegexChecker(method, path)
 		endpoint := &Endpoint{MatchChecker: regexChecker, RoutingFunc: handler, Name: path, rootedName: path}
-		router.root.Endpoints = append(router.root.Endpoints, endpoint)
+		router.root.endpoints = append(router.root.endpoints, endpoint)
 		return
 	}
 	checker := &SimpleChecker{pattern: path, method: method}
 	endpoint := &Endpoint{MatchChecker: checker, RoutingFunc: handler, Name: path, rootedName: path}
-	router.root.Endpoints = append(router.root.Endpoints, endpoint)
+	router.root.endpoints = append(router.root.endpoints, endpoint)
 }

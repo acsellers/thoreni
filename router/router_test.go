@@ -501,3 +501,29 @@ func TestnameColorOperator2(t *testing.T) {
 		}
 	}
 }
+
+func TestRoot(t *testing.T) {
+	r := NewRouter()
+	r.Root(func(ctx *Contextable) {
+		ctx.Render("root testing")
+	})
+
+	testReq1 := &testRequestish{path: "/", method: "GET"}
+	tc1 := newTestContext(testReq1)
+	r.Match(testReq1)(tc1)
+	if atc, ok := tc1.Renderable.(*testContext); ok {
+		if atc.rendered != "root testing" {
+			t.Fatal("root Testing, valid match")
+		}
+	}
+
+	testReq2 := &testRequestish{path: "/a/123abcef", method: "GET"}
+	tc2 := newTestContext(testReq2)
+	r.Match(testReq2)(tc2)
+	if atc, ok := tc2.Renderable.(*testContext); ok {
+		if atc.rendered == "root testing" {
+			t.Fatal("root Testing, invalid match")
+		}
+	}
+
+}

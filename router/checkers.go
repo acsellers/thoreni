@@ -72,3 +72,19 @@ func ReplaceColonOperators(pre string) (post string) {
 func hasColonOperators(path string) bool {
 	return colonChecker.MatchString(path)
 }
+
+type RootChecker struct {
+	method         string
+	normalizedName string
+}
+
+func (rc RootChecker) RespondsTo(rq Requestish) bool {
+	if rq.Path() == rc.normalizedName || rq.Path() == rc.normalizedName+"/" {
+		return true
+	}
+	return false
+}
+
+func (rc RootChecker) Surety(rq Requestish) int {
+	return 1
+}

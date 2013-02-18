@@ -6,15 +6,16 @@ import (
 )
 
 type Namespace struct {
-	Endpoints  []*Endpoint
-	Namespaces []*Namespace
-	Name       string
+	endpoints  []*Endpoint
+	namespaces []*Namespace
+	name       string
 	rootedName string
+	root       *Endpoint
 }
 
 func newNamespace(name string, parent *Namespace) (newNS *Namespace) {
 	newNS = new(Namespace)
-	newNS.Name = name
+	newNS.name = name
 	if parent == nil {
 		newNS.rootedName = "/" + name
 	} else {
@@ -25,14 +26,14 @@ func newNamespace(name string, parent *Namespace) (newNS *Namespace) {
 }
 
 func (nm *Namespace) Match(req Requestish) (response []*Endpoint) {
-	for _, namespace := range nm.Namespaces {
+	for _, namespace := range nm.namespaces {
 		if namespace.Contains(req) {
 			if gottenResponse, ok := namespace.Serves(req); ok {
 				response = append(response, gottenResponse...)
 			}
 		}
 	}
-	for _, endpoint := range nm.Endpoints {
+	for _, endpoint := range nm.endpoints {
 		if ok := endpoint.Serves(req); ok {
 			response = append(response, endpoint)
 		}
@@ -52,10 +53,10 @@ func (namespace *Namespace) AddBuiltinEndpoint(path, method string, handler Rout
 	if hasColonOperators(path) {
 		regexChecker := NewRegexChecker(method, path)
 		endpoint := &Endpoint{MatchChecker: regexChecker, RoutingFunc: handler, Name: path, rootedName: namespace.rootedName + path}
-		namespace.Endpoints = append(namespace.Endpoints, endpoint)
+		namespace.endpoints = append(namespace.endpoints, endpoint)
 		return
 	}
 	checker := &SimpleChecker{pattern: path, method: method}
 	endpoint := &Endpoint{MatchChecker: checker, RoutingFunc: handler, Name: path, rootedName: namespace.rootedName + path}
-	namespace.Endpoints = append(namespace.Endpoints, endpoint)
+	namespace.endpoints = append(namespace.endpoints, endpoint)
 }
