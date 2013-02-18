@@ -527,3 +527,55 @@ func TestRoot(t *testing.T) {
 	}
 
 }
+
+func BasicNamespaceTest(t *testing.T) {
+	r := NewRouter()
+	nm := r.Namespace("what")
+	nm.Root(func(ctx *Contextable) {
+		ctx.Render("namespace testing")
+	})
+
+	testReq1 := &testRequestish{path: "/", method: "GET"}
+	tc1 := newTestContext(testReq1)
+	r.Match(testReq1)(tc1)
+	if atc, ok := tc1.Renderable.(*testContext); ok {
+		if atc.rendered == "namespace testing" {
+			t.Fatal("namespace Testing, invalid match")
+		}
+	}
+
+	testReq2 := &testRequestish{path: "/what/", method: "GET"}
+	tc2 := newTestContext(testReq2)
+	r.Match(testReq2)(tc2)
+	if atc, ok := tc2.Renderable.(*testContext); ok {
+		if atc.rendered != "namespace testing" {
+			t.Fatal("namespace Testing, valid match")
+		}
+	}
+}
+
+func BasicNamespaceGetTest(t *testing.T) {
+	r := NewRouter()
+	nm := r.Namespace("what")
+	nm.Get("now", func(ctx *Contextable) {
+		ctx.Render("namespace get testing")
+	})
+
+	testReq1 := &testRequestish{path: "/", method: "GET"}
+	tc1 := newTestContext(testReq1)
+	r.Match(testReq1)(tc1)
+	if atc, ok := tc1.Renderable.(*testContext); ok {
+		if atc.rendered == "namespace get testing" {
+			t.Fatal("namespace Testing, invalid match")
+		}
+	}
+
+	testReq2 := &testRequestish{path: "/what/now", method: "GET"}
+	tc2 := newTestContext(testReq2)
+	r.Match(testReq2)(tc2)
+	if atc, ok := tc2.Renderable.(*testContext); ok {
+		if atc.rendered != "namespace get testing" {
+			t.Fatal("namespace Testing, valid match")
+		}
+	}
+}
