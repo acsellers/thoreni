@@ -72,7 +72,7 @@ func (r templateRenderer) renderTemplate(templateName, layoutName string, render
 		}
 	}
 	if masterRenderer.masterTemplate.Lookup(templateName) != nil {
-		if err := masterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, layoutName+"-footer", renderData); err == nil {
+		if err := masterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, templateName, renderData); err == nil {
 			page = string(contentBuffer.Bytes())
 		} else {
 			//TODO log error or do something with it
@@ -104,7 +104,7 @@ func (r templateRenderer) renderStatic(templateName, layoutName string, renderDa
 	} else {
 		contentBuffer := new(bytes.Buffer)
 		if masterRenderer.masterTemplate.Lookup(templateName) != nil {
-			if err := masterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, layoutName+"-footer", renderData); err == nil {
+			if err := masterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, templateName, renderData); err == nil {
 				content = string(contentBuffer.Bytes())
 			} else {
 				//TODO log error or do something with it
