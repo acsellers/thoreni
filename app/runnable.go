@@ -6,8 +6,8 @@ import (
 )
 
 type RunnableApp struct {
-	Routable
-	Templateable
+	Routing   Routable
+	Templates Templateable
 }
 
 type Routable interface {
@@ -17,8 +17,10 @@ type Routable interface {
 type Templateable interface {
 	RenderTemplate(string, string, interface{}) (string, string, string)
 	RenderStatic(string, string, interface{}) (string, string, string)
+	Layout(string)
+	Redirect(string)
 }
 
-func Run(user_app Runnable) {
+func Run(user_app *Runnable) {
 
 }
