@@ -28,13 +28,13 @@ func newNamespace(name string, parent *Namespace) (newNS *Namespace) {
 func (nm *Namespace) Match(req Requestish) (response []*Endpoint) {
 	for _, namespace := range nm.namespaces {
 		if namespace.Contains(req) {
-			if gottenResponse, ok := namespace.Serves(req); ok {
+			if gottenResponse, ok := namespace.RespondsTo(req); ok {
 				response = append(response, gottenResponse...)
 			}
 		}
 	}
 	for _, endpoint := range nm.endpoints {
-		if ok := endpoint.Serves(req); ok {
+		if ok := endpoint.RespondsTo(req); ok {
 			response = append(response, endpoint)
 		}
 	}
@@ -43,7 +43,7 @@ func (nm *Namespace) Match(req Requestish) (response []*Endpoint) {
 func (nm *Namespace) Contains(req Requestish) bool {
 	return strings.HasPrefix(req.Path(), nm.rootedName)
 }
-func (nm *Namespace) Serves(req Requestish) (response []*Endpoint, found bool) {
+func (nm *Namespace) RespondsTo(req Requestish) (response []*Endpoint, found bool) {
 	response = nm.Match(req)
 	found = len(response) > 0
 	return

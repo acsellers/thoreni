@@ -5,7 +5,7 @@ import "testing"
 func TestBasicGet(t *testing.T) {
 	r := NewRouter()
 	r.Get("/", func(ctx *Contextable) {
-		ctx.Render("testing")
+		ctx.Render("testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "GET"}
@@ -21,7 +21,7 @@ func TestBasicGet(t *testing.T) {
 func TestBasicGetInvalid(t *testing.T) {
 	r := NewRouter()
 	r.Get("/asdf", func(ctx *Contextable) {
-		ctx.Render("testing")
+		ctx.Render("testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "GET"}
@@ -37,10 +37,10 @@ func TestBasicGetInvalid(t *testing.T) {
 func TestTwoGets(t *testing.T) {
 	r := NewRouter()
 	r.Get("/asdf", func(ctx *Contextable) {
-		ctx.Render("testing")
+		ctx.Render("testing", nil)
 	})
 	r.Get("/", func(ctx *Contextable) {
-		ctx.Render("error")
+		ctx.Render("error", nil)
 	})
 
 	testReq := &testRequestish{path: "/asdf", method: "GET"}
@@ -56,10 +56,10 @@ func TestTwoGets(t *testing.T) {
 func TestTwoGetsReversed(t *testing.T) {
 	r := NewRouter()
 	r.Get("/", func(ctx *Contextable) {
-		ctx.Render("error")
+		ctx.Render("error", nil)
 	})
 	r.Get("/asdf", func(ctx *Contextable) {
-		ctx.Render("testing")
+		ctx.Render("testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/asdf", method: "GET"}
@@ -75,7 +75,7 @@ func TestTwoGetsReversed(t *testing.T) {
 func TestBasicPost(t *testing.T) {
 	r := NewRouter()
 	r.Post("/", func(ctx *Contextable) {
-		ctx.Render("testing")
+		ctx.Render("testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "POST"}
@@ -91,11 +91,11 @@ func TestBasicPost(t *testing.T) {
 func TestGetAndPost(t *testing.T) {
 	r := NewRouter()
 	r.Get("/", func(ctx *Contextable) {
-		ctx.Render("get")
+		ctx.Render("get", nil)
 	})
 
 	r.Post("/", func(ctx *Contextable) {
-		ctx.Render("post")
+		ctx.Render("post", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "POST"}
@@ -120,7 +120,7 @@ func TestGetAndPost(t *testing.T) {
 func TestBasicUpdate(t *testing.T) {
 	r := NewRouter()
 	r.Update("/", func(ctx *Contextable) {
-		ctx.Render("update testing")
+		ctx.Render("update testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "UPDATE"}
@@ -136,7 +136,7 @@ func TestBasicUpdate(t *testing.T) {
 func TestBasicHead(t *testing.T) {
 	r := NewRouter()
 	r.Head("/", func(ctx *Contextable) {
-		ctx.Render("head testing")
+		ctx.Render("head testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "HEAD"}
@@ -152,7 +152,7 @@ func TestBasicHead(t *testing.T) {
 func TestBasicOptions(t *testing.T) {
 	r := NewRouter()
 	r.Options("/", func(ctx *Contextable) {
-		ctx.Render("options testing")
+		ctx.Render("options testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "OPTIONS"}
@@ -168,7 +168,7 @@ func TestBasicOptions(t *testing.T) {
 func TestBasicDelete(t *testing.T) {
 	r := NewRouter()
 	r.Delete("/", func(ctx *Contextable) {
-		ctx.Render("delete testing")
+		ctx.Render("delete testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "DELETE"}
@@ -184,7 +184,7 @@ func TestBasicDelete(t *testing.T) {
 func TestBasicPut(t *testing.T) {
 	r := NewRouter()
 	r.Put("/", func(ctx *Contextable) {
-		ctx.Render("put testing")
+		ctx.Render("put testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "PUT"}
@@ -200,7 +200,7 @@ func TestBasicPut(t *testing.T) {
 func TestBasicAny(t *testing.T) {
 	r := NewRouter()
 	r.Any("/", func(ctx *Contextable) {
-		ctx.Render("any testing")
+		ctx.Render("any testing", nil)
 	})
 
 	testReq := &testRequestish{path: "/", method: "POST"}
@@ -234,7 +234,7 @@ func TestBasicAny(t *testing.T) {
 func TestIDColorOperator(t *testing.T) {
 	r := NewRouter()
 	r.Get("/a/:id", func(ctx *Contextable) {
-		ctx.Render("id testing")
+		ctx.Render("id testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -275,7 +275,7 @@ func TestIDColorOperator(t *testing.T) {
 func TestIDColorOperator2(t *testing.T) {
 	r := NewRouter()
 	r.Get("/a/:id$", func(ctx *Contextable) {
-		ctx.Render("id testing")
+		ctx.Render("id testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -316,15 +316,15 @@ func TestIDColorOperator2(t *testing.T) {
 func TestkeyColorOperator(t *testing.T) {
 	r := NewRouter()
 	r.Get("/", func(ctx *Contextable) {
-		ctx.Render("root testing")
+		ctx.Render("root testing", nil)
 	})
 
 	r.Get("/a/:id", func(ctx *Contextable) {
-		ctx.Render("id testing")
+		ctx.Render("id testing", nil)
 	})
 
 	r.Get("/a/:key", func(ctx *Contextable) {
-		ctx.Render("key testing")
+		ctx.Render("key testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -366,7 +366,7 @@ func TestkeyColorOperator(t *testing.T) {
 func TestkeyColorOperator2(t *testing.T) {
 	r := NewRouter()
 	r.Get("/a/:key$", func(ctx *Contextable) {
-		ctx.Render("key testing")
+		ctx.Render("key testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -407,7 +407,7 @@ func TestkeyColorOperator2(t *testing.T) {
 func TestslugColorOperator2(t *testing.T) {
 	r := NewRouter()
 	r.Get("/a/:slug$", func(ctx *Contextable) {
-		ctx.Render("slug testing")
+		ctx.Render("slug testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -456,7 +456,7 @@ func TestslugColorOperator2(t *testing.T) {
 func TestnameColorOperator2(t *testing.T) {
 	r := NewRouter()
 	r.Get("/a/:name$", func(ctx *Contextable) {
-		ctx.Render("name testing")
+		ctx.Render("name testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -505,7 +505,7 @@ func TestnameColorOperator2(t *testing.T) {
 func TestRoot(t *testing.T) {
 	r := NewRouter()
 	r.Root(func(ctx *Contextable) {
-		ctx.Render("root testing")
+		ctx.Render("root testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -532,7 +532,7 @@ func BasicNamespaceTest(t *testing.T) {
 	r := NewRouter()
 	nm := r.Namespace("what")
 	nm.Root(func(ctx *Contextable) {
-		ctx.Render("namespace testing")
+		ctx.Render("namespace testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}
@@ -558,7 +558,7 @@ func BasicNamespaceGetTest(t *testing.T) {
 	r := NewRouter()
 	nm := r.Namespace("what")
 	nm.Get("now", func(ctx *Contextable) {
-		ctx.Render("namespace get testing")
+		ctx.Render("namespace get testing", nil)
 	})
 
 	testReq1 := &testRequestish{path: "/", method: "GET"}

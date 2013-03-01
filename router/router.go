@@ -41,7 +41,7 @@ func NewRouter() *Router {
 // routes defined.
 func (router *Router) Match(req Requestish) RoutingFunc {
 	matchingResponses := make([]*Endpoint, 0)
-	if response, found := router.root.Serves(req); found {
+	if response, found := router.root.RespondsTo(req); found {
 		matchingResponses = append(matchingResponses, response...)
 	}
 

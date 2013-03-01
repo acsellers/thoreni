@@ -5,5 +5,5 @@ package router
 // will then use that template. If you wish to implement a custom function for this purpose, 
 // set the NotFound RoutingFunc on the Router for you application with your new RoutingFunc.
 func Default404(ctx *Contextable) {
-	ctx.Render("Not Found")
+	ctx.Render("Not Found", nil)
 }

@@ -23,9 +23,9 @@ func (r *Router) TakeOver() {
 // ServeHTTP is here so that a thoreni.Router can be used as a valid Handler for the net/http
 // system. You are not expected to call this function yourself, but you can if you want.
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	wrappedRequest := wrapRequest(req)
-	fixmeContext := &Contextable{Renderable: &FIXMERenderer{w}, Requestish: wrappedRequest}
-	r.Match(wrappedRequest)(fixmeContext)
+	//wrappedRequest := wrapRequest(req)
+	//fixmeContext := &Contextable{Renderable: &FIXMERenderer{w}, Requestish: wrappedRequest}
+	//r.Match(wrappedRequest)(fixmeContext)
 }
 
 // A thoreni.Request makes it a bit easier to access the Path from the request, and eventually 
@@ -52,10 +52,18 @@ type FIXMERenderer struct {
 	w http.ResponseWriter
 }
 
-func (fr *FIXMERenderer) Render(s string) {
-	fmt.Fprintf(fr.w, s)
+func (fr *FIXMERenderer) Render(s string, d interface{}) {
+	fmt.Fprint(fr.w, s)
 }
-
+func (fr *FIXMERenderer) RenderStatic(s string, d interface{}) {
+	fmt.Fprint(fr.w, s)
+}
+func (fr *FIXMERenderer) Layout(s string) {
+	fmt.Fprintf(fr.w, "Layout: %s", s)
+}
+func (fr *FIXMERenderer) Redirect(s string) {
+	fmt.Fprintf(fr.w, "Redirect to: %s", s)
+}
 func (fr *FIXMERenderer) Write(p []byte) (n int, err error) {
 	return fr.w.Write(p)
 }

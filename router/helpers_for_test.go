@@ -8,12 +8,17 @@ type testContext struct {
 	rendered string
 }
 
-func (t *testContext) Render(s string) {
+func (t *testContext) Render(s string, d interface{}) {
 	t.rendered = s
 }
-
-func (t *testContext) Write(p []byte) (n int, err error) {
-	return 0, nil
+func (t *testContext) RenderStatic(s string, d interface{}) {
+	t.rendered = s
+}
+func (t *testContext) Layout(s string) {
+	t.rendered = s
+}
+func (t *testContext) Redirect(s string) {
+	t.rendered = s
 }
 
 type testRequestish struct {

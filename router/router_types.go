@@ -1,7 +1,5 @@
 package router
 
-import "io"
-
 type RoutingFunc func(*Contextable)
 
 type Contextable struct {
@@ -14,8 +12,8 @@ type Requestish interface {
 	Method() string
 }
 type Renderable interface {
-	Render(string)
-	RenderStatic(string)
+	Render(string, interface{})
+	RenderStatic(string, interface{})
 	Layout(string)
 	Redirect(address string)
 }
