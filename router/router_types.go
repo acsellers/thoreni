@@ -15,5 +15,7 @@ type Requestish interface {
 }
 type Renderable interface {
 	Render(string)
-	io.Writer
+	RenderStatic(string)
+	Layout(string)
+	Redirect(address string)
 }

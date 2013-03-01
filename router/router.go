@@ -22,6 +22,10 @@ type Router struct {
 	NotFound RoutingFunc
 }
 
+type Routable interface {
+	Match(req Requestish) RoutingFunc
+}
+
 // NewRouter returns a new Router
 func NewRouter() *Router {
 	r := new(Router)

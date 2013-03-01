@@ -3,11 +3,11 @@ package render
 import "bytes"
 import "fmt"
 import "html/template"
-import "io"
+import "net/http"
 import "path"
 
 var (
-	masterRenderer *templateRenderer
+	MasterRenderer *TemplateRenderer
 	templateGlob   string
 )
 
@@ -19,14 +19,15 @@ func SetFileType(ending string) {
 	templateGlob = fmt.Sprintf("*.%s", ending)
 }
 
-type templateRenderer struct {
+type TemplateRenderer struct {
 	masterTemplate  *template.Template
 	renderedStatics map[string]string
 }
 type RequestRenderer struct {
-	master     *templateRenderer
+	master     *TemplateRenderer
 	layout     string
-	Output     io.Writer
+	Output     http.ResponseWriter
+	Request    *http.Request
 	RenderData interface{}
 }
 
@@ -34,45 +35,60 @@ type RequestRenderer struct {
 // calling ParseGlob or need to get the returned template
 // also decide what do do about error from it
 func NewRenderer(templatePath string) {
-	r := new(templateRenderer)
+	r := new(TemplateRenderer)
 	r.masterTemplate = template.New("master")
 	r.masterTemplate.ParseGlob(path.Join(templatePath, templateGlob))
 	r.renderedStatics = make(map[string]string)
 
-	masterRenderer = r
+	MasterRenderer = r
+}
+
+func NewRendererFromLists(layoutList, viewList []string) {
+	r := new(TemplateRenderer)
+	r.masterTemplate = template.New("master")
+	for _, layout := range layoutList {
+		r.masterTemplate.Parse(layout)
+	}
+	for _, view := range viewList {
+		r.masterTemplate.Parse(view)
+	}
+	r.renderedStatics = make(map[string]string)
+
+	MasterRenderer = r
+
 }
 
 func NewRequestRenderer() *RequestRenderer {
 	rr := new(RequestRenderer)
-	rr.master = masterRenderer
+	rr.master = MasterRenderer
 	rr.layout = "default"
 	return rr
 }
 
 func AddFolder(templatePath string) {
-	masterRenderer.masterTemplate.ParseGlob(path.Join(templatePath, templateGlob))
+	MasterRenderer.masterTemplate.ParseGlob(path.Join(templatePath, templateGlob))
 }
 
-func (r templateRenderer) renderTemplate(templateName, layoutName string, renderData interface{}) (header, page, footer string) {
+func (r TemplateRenderer) RenderTemplate(templateName, layoutName string, renderData interface{}) (header, page, footer string) {
 	headerBuffer := new(bytes.Buffer)
 	contentBuffer := new(bytes.Buffer)
 	footerBuffer := new(bytes.Buffer)
-	if masterRenderer.masterTemplate.Lookup(layoutName+"-header") != nil {
-		if err := masterRenderer.masterTemplate.ExecuteTemplate(headerBuffer, layoutName+"-header", renderData); err == nil {
+	if MasterRenderer.masterTemplate.Lookup(layoutName+"-header") != nil {
+		if err := MasterRenderer.masterTemplate.ExecuteTemplate(headerBuffer, layoutName+"-header", renderData); err == nil {
 			header = string(headerBuffer.Bytes())
 		} else {
 			//TODO log error or do something with it
 		}
 	}
-	if masterRenderer.masterTemplate.Lookup(layoutName+"-footer") != nil {
-		if err := masterRenderer.masterTemplate.ExecuteTemplate(footerBuffer, layoutName+"-footer", renderData); err == nil {
+	if MasterRenderer.masterTemplate.Lookup(layoutName+"-footer") != nil {
+		if err := MasterRenderer.masterTemplate.ExecuteTemplate(footerBuffer, layoutName+"-footer", renderData); err == nil {
 			footer = string(footerBuffer.Bytes())
 		} else {
 			//TODO log error or do something with it
 		}
 	}
-	if masterRenderer.masterTemplate.Lookup(templateName) != nil {
-		if err := masterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, templateName, renderData); err == nil {
+	if MasterRenderer.masterTemplate.Lookup(templateName) != nil {
+		if err := MasterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, templateName, renderData); err == nil {
 			page = string(contentBuffer.Bytes())
 		} else {
 			//TODO log error or do something with it
@@ -81,30 +97,30 @@ func (r templateRenderer) renderTemplate(templateName, layoutName string, render
 	return
 }
 
-func (r templateRenderer) renderStatic(templateName, layoutName string, renderData interface{}) (header, content, footer string) {
+func (r TemplateRenderer) RenderStatic(templateName, layoutName string, renderData interface{}) (header, content, footer string) {
 	headerBuffer := new(bytes.Buffer)
 	footerBuffer := new(bytes.Buffer)
-	if masterRenderer.masterTemplate.Lookup(layoutName+"-header") != nil {
-		if err := masterRenderer.masterTemplate.ExecuteTemplate(headerBuffer, layoutName+"-header", renderData); err == nil {
+	if MasterRenderer.masterTemplate.Lookup(layoutName+"-header") != nil {
+		if err := MasterRenderer.masterTemplate.ExecuteTemplate(headerBuffer, layoutName+"-header", renderData); err == nil {
 			header = string(headerBuffer.Bytes())
 		} else {
 			//TODO log error or do something with it
 		}
 	}
-	if masterRenderer.masterTemplate.Lookup(layoutName+"-footer") != nil {
-		if err := masterRenderer.masterTemplate.ExecuteTemplate(footerBuffer, layoutName+"-footer", renderData); err == nil {
+	if MasterRenderer.masterTemplate.Lookup(layoutName+"-footer") != nil {
+		if err := MasterRenderer.masterTemplate.ExecuteTemplate(footerBuffer, layoutName+"-footer", renderData); err == nil {
 			footer = string(footerBuffer.Bytes())
 		} else {
 			//TODO log error or do something with it
 		}
 	}
 
-	if precontent, found := masterRenderer.renderedStatics[templateName]; found {
+	if precontent, found := MasterRenderer.renderedStatics[templateName]; found {
 		content = precontent
 	} else {
 		contentBuffer := new(bytes.Buffer)
-		if masterRenderer.masterTemplate.Lookup(templateName) != nil {
-			if err := masterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, templateName, renderData); err == nil {
+		if MasterRenderer.masterTemplate.Lookup(templateName) != nil {
+			if err := MasterRenderer.masterTemplate.ExecuteTemplate(contentBuffer, templateName, renderData); err == nil {
 				content = string(contentBuffer.Bytes())
 			} else {
 				//TODO log error or do something with it
@@ -116,7 +132,7 @@ func (r templateRenderer) renderStatic(templateName, layoutName string, renderDa
 
 func (r RequestRenderer) Render(templateName string) {
 	if r.Output != nil {
-		top, content, bottom := masterRenderer.renderTemplate(templateName, r.layout, r.RenderData)
+		top, content, bottom := MasterRenderer.RenderTemplate(templateName, r.layout, r.RenderData)
 		if top == "" || bottom == "" {
 			//TODO write some kind of 500 error
 			fmt.Fprint(r.Output, "Template render error")
@@ -134,7 +150,7 @@ func (r RequestRenderer) Render(templateName string) {
 
 func (r RequestRenderer) RenderStatic(templateName string) {
 	if r.Output != nil {
-		top, content, bottom := masterRenderer.renderStatic(templateName, r.layout, r.RenderData)
+		top, content, bottom := MasterRenderer.RenderStatic(templateName, r.layout, r.RenderData)
 		if top == "" || bottom == "" {
 			//TODO write some kind of 500 error
 			fmt.Fprint(r.Output, "Template render error")
@@ -151,4 +167,8 @@ func (r RequestRenderer) RenderStatic(templateName string) {
 
 func (r *RequestRenderer) Layout(layoutName string) {
 	r.layout = layoutName
+}
+
+func (r *RequestRenderer) Redirect(address string) {
+	http.Redirect(r.Output, r.Request, address, http.StatusSeeOther)
 }
