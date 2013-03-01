@@ -1,10 +1,11 @@
 package router
 
+import "github.com/acsellers/thoreni"
 import "testing"
 
 func TestBasicGet(t *testing.T) {
 	r := NewRouter()
-	r.Get("/", func(ctx *Contextable) {
+	r.Get("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("testing", nil)
 	})
 
@@ -20,7 +21,7 @@ func TestBasicGet(t *testing.T) {
 
 func TestBasicGetInvalid(t *testing.T) {
 	r := NewRouter()
-	r.Get("/asdf", func(ctx *Contextable) {
+	r.Get("/asdf", func(ctx *thoreni.Contextable) {
 		ctx.Render("testing", nil)
 	})
 
@@ -36,10 +37,10 @@ func TestBasicGetInvalid(t *testing.T) {
 
 func TestTwoGets(t *testing.T) {
 	r := NewRouter()
-	r.Get("/asdf", func(ctx *Contextable) {
+	r.Get("/asdf", func(ctx *thoreni.Contextable) {
 		ctx.Render("testing", nil)
 	})
-	r.Get("/", func(ctx *Contextable) {
+	r.Get("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("error", nil)
 	})
 
@@ -55,10 +56,10 @@ func TestTwoGets(t *testing.T) {
 
 func TestTwoGetsReversed(t *testing.T) {
 	r := NewRouter()
-	r.Get("/", func(ctx *Contextable) {
+	r.Get("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("error", nil)
 	})
-	r.Get("/asdf", func(ctx *Contextable) {
+	r.Get("/asdf", func(ctx *thoreni.Contextable) {
 		ctx.Render("testing", nil)
 	})
 
@@ -74,7 +75,7 @@ func TestTwoGetsReversed(t *testing.T) {
 
 func TestBasicPost(t *testing.T) {
 	r := NewRouter()
-	r.Post("/", func(ctx *Contextable) {
+	r.Post("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("testing", nil)
 	})
 
@@ -90,11 +91,11 @@ func TestBasicPost(t *testing.T) {
 
 func TestGetAndPost(t *testing.T) {
 	r := NewRouter()
-	r.Get("/", func(ctx *Contextable) {
+	r.Get("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("get", nil)
 	})
 
-	r.Post("/", func(ctx *Contextable) {
+	r.Post("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("post", nil)
 	})
 
@@ -119,7 +120,7 @@ func TestGetAndPost(t *testing.T) {
 
 func TestBasicUpdate(t *testing.T) {
 	r := NewRouter()
-	r.Update("/", func(ctx *Contextable) {
+	r.Update("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("update testing", nil)
 	})
 
@@ -135,7 +136,7 @@ func TestBasicUpdate(t *testing.T) {
 
 func TestBasicHead(t *testing.T) {
 	r := NewRouter()
-	r.Head("/", func(ctx *Contextable) {
+	r.Head("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("head testing", nil)
 	})
 
@@ -151,7 +152,7 @@ func TestBasicHead(t *testing.T) {
 
 func TestBasicOptions(t *testing.T) {
 	r := NewRouter()
-	r.Options("/", func(ctx *Contextable) {
+	r.Options("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("options testing", nil)
 	})
 
@@ -167,7 +168,7 @@ func TestBasicOptions(t *testing.T) {
 
 func TestBasicDelete(t *testing.T) {
 	r := NewRouter()
-	r.Delete("/", func(ctx *Contextable) {
+	r.Delete("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("delete testing", nil)
 	})
 
@@ -183,7 +184,7 @@ func TestBasicDelete(t *testing.T) {
 
 func TestBasicPut(t *testing.T) {
 	r := NewRouter()
-	r.Put("/", func(ctx *Contextable) {
+	r.Put("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("put testing", nil)
 	})
 
@@ -199,7 +200,7 @@ func TestBasicPut(t *testing.T) {
 
 func TestBasicAny(t *testing.T) {
 	r := NewRouter()
-	r.Any("/", func(ctx *Contextable) {
+	r.Any("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("any testing", nil)
 	})
 
@@ -233,7 +234,7 @@ func TestBasicAny(t *testing.T) {
 
 func TestIDColorOperator(t *testing.T) {
 	r := NewRouter()
-	r.Get("/a/:id", func(ctx *Contextable) {
+	r.Get("/a/:id", func(ctx *thoreni.Contextable) {
 		ctx.Render("id testing", nil)
 	})
 
@@ -274,7 +275,7 @@ func TestIDColorOperator(t *testing.T) {
 }
 func TestIDColorOperator2(t *testing.T) {
 	r := NewRouter()
-	r.Get("/a/:id$", func(ctx *Contextable) {
+	r.Get("/a/:id$", func(ctx *thoreni.Contextable) {
 		ctx.Render("id testing", nil)
 	})
 
@@ -315,15 +316,15 @@ func TestIDColorOperator2(t *testing.T) {
 
 func TestkeyColorOperator(t *testing.T) {
 	r := NewRouter()
-	r.Get("/", func(ctx *Contextable) {
+	r.Get("/", func(ctx *thoreni.Contextable) {
 		ctx.Render("root testing", nil)
 	})
 
-	r.Get("/a/:id", func(ctx *Contextable) {
+	r.Get("/a/:id", func(ctx *thoreni.Contextable) {
 		ctx.Render("id testing", nil)
 	})
 
-	r.Get("/a/:key", func(ctx *Contextable) {
+	r.Get("/a/:key", func(ctx *thoreni.Contextable) {
 		ctx.Render("key testing", nil)
 	})
 
@@ -365,7 +366,7 @@ func TestkeyColorOperator(t *testing.T) {
 }
 func TestkeyColorOperator2(t *testing.T) {
 	r := NewRouter()
-	r.Get("/a/:key$", func(ctx *Contextable) {
+	r.Get("/a/:key$", func(ctx *thoreni.Contextable) {
 		ctx.Render("key testing", nil)
 	})
 
@@ -406,7 +407,7 @@ func TestkeyColorOperator2(t *testing.T) {
 
 func TestslugColorOperator2(t *testing.T) {
 	r := NewRouter()
-	r.Get("/a/:slug$", func(ctx *Contextable) {
+	r.Get("/a/:slug$", func(ctx *thoreni.Contextable) {
 		ctx.Render("slug testing", nil)
 	})
 
@@ -455,7 +456,7 @@ func TestslugColorOperator2(t *testing.T) {
 
 func TestnameColorOperator2(t *testing.T) {
 	r := NewRouter()
-	r.Get("/a/:name$", func(ctx *Contextable) {
+	r.Get("/a/:name$", func(ctx *thoreni.Contextable) {
 		ctx.Render("name testing", nil)
 	})
 
@@ -504,7 +505,7 @@ func TestnameColorOperator2(t *testing.T) {
 
 func TestRoot(t *testing.T) {
 	r := NewRouter()
-	r.Root(func(ctx *Contextable) {
+	r.Root(func(ctx *thoreni.Contextable) {
 		ctx.Render("root testing", nil)
 	})
 
@@ -531,7 +532,7 @@ func TestRoot(t *testing.T) {
 func BasicNamespaceTest(t *testing.T) {
 	r := NewRouter()
 	nm := r.Namespace("what")
-	nm.Root(func(ctx *Contextable) {
+	nm.Root(func(ctx *thoreni.Contextable) {
 		ctx.Render("namespace testing", nil)
 	})
 
@@ -557,7 +558,7 @@ func BasicNamespaceTest(t *testing.T) {
 func BasicNamespaceGetTest(t *testing.T) {
 	r := NewRouter()
 	nm := r.Namespace("what")
-	nm.Get("now", func(ctx *Contextable) {
+	nm.Get("now", func(ctx *thoreni.Contextable) {
 		ctx.Render("namespace get testing", nil)
 	})
 

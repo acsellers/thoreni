@@ -1,7 +1,11 @@
 package router
 
-func newTestContext(req Requestish) *Contextable {
-	return &Contextable{Renderable: new(testContext), Requestish: req}
+import (
+	"github.com/acsellers/thoreni"
+)
+
+func newTestContext(req thoreni.Requestish) *thoreni.Contextable {
+	return &thoreni.Contextable{Renderable: new(testContext), Requestish: req}
 }
 
 type testContext struct {

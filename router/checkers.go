@@ -1,6 +1,7 @@
 package router
 
 import "fmt"
+import "github.com/acsellers/thoreni"
 import "regexp"
 import "strings"
 
@@ -16,8 +17,8 @@ var colonChecker = regexp.MustCompile(":id|:key|:slug|:name")
 // Surety actions can be slower. Exact method matchers will rank 1 higher than matches on the any 
 // method, we do this by doubling the length of the match.
 type MatchChecker interface {
-	RespondsTo(Requestish) bool
-	Surety(Requestish) int
+	RespondsTo(thoreni.Requestish) bool
+	Surety(thoreni.Requestish) int
 }
 
 type SimpleChecker struct {
@@ -25,10 +26,10 @@ type SimpleChecker struct {
 	method  string
 }
 
-func (sc SimpleChecker) RespondsTo(rq Requestish) bool {
+func (sc SimpleChecker) RespondsTo(rq thoreni.Requestish) bool {
 	return (rq.Method() == sc.method || sc.method == "*") && strings.HasPrefix(rq.Path(), sc.pattern)
 }
-func (sc SimpleChecker) Surety(rq Requestish) int {
+func (sc SimpleChecker) Surety(rq thoreni.Requestish) int {
 	strength := 1
 	if sc.method == "*" {
 		strength = 0
@@ -51,12 +52,12 @@ func NewRegexChecker(method, requestRegex string) *RegexChecker {
 	return rc
 }
 
-func (rc RegexChecker) RespondsTo(rq Requestish) bool {
+func (rc RegexChecker) RespondsTo(rq thoreni.Requestish) bool {
 	return (rc.method == rq.Method() || rc.method == "*") && rc.regex.MatchString(rq.Path())
 }
 
 //TODO: this is not taking into account the matched length, fix when we start dealing with the regex
-func (rc RegexChecker) Surety(rq Requestish) int {
+func (rc RegexChecker) Surety(rq thoreni.Requestish) int {
 	return len(rc.regex.FindString(rq.Path()))*2 + 1
 }
 
@@ -78,13 +79,13 @@ type RootChecker struct {
 	normalizedName string
 }
 
-func (rc RootChecker) RespondsTo(rq Requestish) bool {
+func (rc RootChecker) RespondsTo(rq thoreni.Requestish) bool {
 	if rq.Path() == rc.normalizedName || rq.Path() == rc.normalizedName+"/" {
 		return true
 	}
 	return false
 }
 
-func (rc RootChecker) Surety(rq Requestish) int {
+func (rc RootChecker) Surety(rq thoreni.Requestish) int {
 	return 1
 }

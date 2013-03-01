@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"github.com/acsellers/thoreni"
 	"strings"
 )
 
@@ -25,26 +26,26 @@ func newNamespace(name string, parent *Namespace) (newNS *Namespace) {
 	return
 }
 
-func (nm *Namespace) Match(req Requestish) (response []*Endpoint) {
-	for _, namespace := range nm.namespaces {
+func (namespace *Namespace) Match(req thoreni.Requestish) (response []*Endpoint) {
+	for _, namespace := range namespace.namespaces {
 		if namespace.Contains(req) {
 			if gottenResponse, ok := namespace.RespondsTo(req); ok {
 				response = append(response, gottenResponse...)
 			}
 		}
 	}
-	for _, endpoint := range nm.endpoints {
+	for _, endpoint := range namespace.endpoints {
 		if ok := endpoint.RespondsTo(req); ok {
 			response = append(response, endpoint)
 		}
 	}
 	return
 }
-func (nm *Namespace) Contains(req Requestish) bool {
-	return strings.HasPrefix(req.Path(), nm.rootedName)
+func (namespace *Namespace) Contains(req thoreni.Requestish) bool {
+	return strings.HasPrefix(req.Path(), namespace.rootedName)
 }
-func (nm *Namespace) RespondsTo(req Requestish) (response []*Endpoint, found bool) {
-	response = nm.Match(req)
+func (namespace *Namespace) RespondsTo(req thoreni.Requestish) (response []*Endpoint, found bool) {
+	response = namespace.Match(req)
 	found = len(response) > 0
 	return
 }
