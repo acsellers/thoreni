@@ -19,6 +19,4 @@ type LocalRenderer interface {
 type Renderable interface {
 	RenderTemplate(string, string, interface{}) (string, string, string)
 	RenderStatic(string, string, interface{}) (string, string, string)
-	Layout(string)
-	Redirect(string)
 }
