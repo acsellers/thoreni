@@ -9,7 +9,7 @@ func TestBasicGet(t *testing.T) {
 		ctx.Render("testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "GET"}
+	testReq := requestish("/", "GET")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -25,7 +25,7 @@ func TestBasicGetInvalid(t *testing.T) {
 		ctx.Render("testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "GET"}
+	testReq := requestish("/", "GET")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -44,7 +44,7 @@ func TestTwoGets(t *testing.T) {
 		ctx.Render("error", nil)
 	})
 
-	testReq := &testRequestish{path: "/asdf", method: "GET"}
+	testReq := requestish("/asdf", "GET")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -63,7 +63,7 @@ func TestTwoGetsReversed(t *testing.T) {
 		ctx.Render("testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/asdf", method: "GET"}
+	testReq := requestish("/asdf", "GET")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -79,7 +79,7 @@ func TestBasicPost(t *testing.T) {
 		ctx.Render("testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "POST"}
+	testReq := requestish("/", "POST")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -99,7 +99,7 @@ func TestGetAndPost(t *testing.T) {
 		ctx.Render("post", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "POST"}
+	testReq := requestish("/", "POST")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -108,7 +108,7 @@ func TestGetAndPost(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/", method: "GET"}
+	testReq2 := requestish("/", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -124,7 +124,7 @@ func TestBasicUpdate(t *testing.T) {
 		ctx.Render("update testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "UPDATE"}
+	testReq := requestish("/", "UPDATE")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -140,7 +140,7 @@ func TestBasicHead(t *testing.T) {
 		ctx.Render("head testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "HEAD"}
+	testReq := requestish("/", "HEAD")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -156,7 +156,7 @@ func TestBasicOptions(t *testing.T) {
 		ctx.Render("options testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "OPTIONS"}
+	testReq := requestish("/", "OPTIONS")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -172,7 +172,7 @@ func TestBasicDelete(t *testing.T) {
 		ctx.Render("delete testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "DELETE"}
+	testReq := requestish("/", "DELETE")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -188,7 +188,7 @@ func TestBasicPut(t *testing.T) {
 		ctx.Render("put testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "PUT"}
+	testReq := requestish("/", "PUT")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -204,7 +204,7 @@ func TestBasicAny(t *testing.T) {
 		ctx.Render("any testing", nil)
 	})
 
-	testReq := &testRequestish{path: "/", method: "POST"}
+	testReq := requestish("/", "POST")
 	tc := newTestContext(testReq)
 	r.Match(testReq)(tc)
 	if atc, ok := tc.Renderable.(*testContext); ok {
@@ -213,7 +213,7 @@ func TestBasicAny(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/", method: "GET"}
+	testReq2 := requestish("/", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -222,7 +222,7 @@ func TestBasicAny(t *testing.T) {
 		}
 	}
 
-	testReq3 := &testRequestish{path: "/", method: "PUT"}
+	testReq3 := requestish("/", "PUT")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -238,7 +238,7 @@ func TestIDColorOperator(t *testing.T) {
 		ctx.Render("id testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -247,7 +247,7 @@ func TestIDColorOperator(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123", method: "GET"}
+	testReq2 := requestish("/a/123", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -255,7 +255,7 @@ func TestIDColorOperator(t *testing.T) {
 			t.Fatal("ID Testing, valid match")
 		}
 	}
-	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	testReq3 := requestish("/a/arel", "GET")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -263,7 +263,7 @@ func TestIDColorOperator(t *testing.T) {
 			t.Fatal("ID Testing, invalid match (second)")
 		}
 	}
-	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	testReq4 := requestish("/a/123arel", "GET")
 	tc4 := newTestContext(testReq4)
 	r.Match(testReq4)(tc4)
 	if atc, ok := tc4.Renderable.(*testContext); ok {
@@ -279,7 +279,7 @@ func TestIDColorOperator2(t *testing.T) {
 		ctx.Render("id testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -288,7 +288,7 @@ func TestIDColorOperator2(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123", method: "GET"}
+	testReq2 := requestish("/a/123", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -296,7 +296,7 @@ func TestIDColorOperator2(t *testing.T) {
 			t.Fatal("ID Testing, valid match")
 		}
 	}
-	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	testReq3 := requestish("/a/arel", "GET")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -304,7 +304,7 @@ func TestIDColorOperator2(t *testing.T) {
 			t.Fatal("ID Testing, invalid match (second)")
 		}
 	}
-	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	testReq4 := requestish("/a/123arel", "GET")
 	tc4 := newTestContext(testReq4)
 	r.Match(testReq4)(tc4)
 	if atc, ok := tc4.Renderable.(*testContext); ok {
@@ -328,7 +328,7 @@ func TestkeyColorOperator(t *testing.T) {
 		ctx.Render("key testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -337,7 +337,7 @@ func TestkeyColorOperator(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123", method: "GET"}
+	testReq2 := requestish("/a/123", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -345,7 +345,7 @@ func TestkeyColorOperator(t *testing.T) {
 			t.Fatal("key Testing, id match")
 		}
 	}
-	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	testReq3 := requestish("/a/arel", "GET")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -354,7 +354,7 @@ func TestkeyColorOperator(t *testing.T) {
 		}
 	}
 
-	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	testReq4 := requestish("/a/123arel", "GET")
 	tc4 := newTestContext(testReq4)
 	r.Match(testReq4)(tc4)
 	if atc, ok := tc4.Renderable.(*testContext); ok {
@@ -370,7 +370,7 @@ func TestkeyColorOperator2(t *testing.T) {
 		ctx.Render("key testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -379,7 +379,7 @@ func TestkeyColorOperator2(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123abcef", method: "GET"}
+	testReq2 := requestish("/a/123abcef", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -387,7 +387,7 @@ func TestkeyColorOperator2(t *testing.T) {
 			t.Fatal("key Testing, valkey match")
 		}
 	}
-	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	testReq3 := requestish("/a/arel", "GET")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -395,7 +395,7 @@ func TestkeyColorOperator2(t *testing.T) {
 			t.Fatal("key Testing, invalkey match (second)")
 		}
 	}
-	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	testReq4 := requestish("/a/123arel", "GET")
 	tc4 := newTestContext(testReq4)
 	r.Match(testReq4)(tc4)
 	if atc, ok := tc4.Renderable.(*testContext); ok {
@@ -411,7 +411,7 @@ func TestslugColorOperator2(t *testing.T) {
 		ctx.Render("slug testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -420,7 +420,7 @@ func TestslugColorOperator2(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123abcef", method: "GET"}
+	testReq2 := requestish("/a/123abcef", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -428,7 +428,7 @@ func TestslugColorOperator2(t *testing.T) {
 			t.Fatal("slug Testing, valslug match")
 		}
 	}
-	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	testReq3 := requestish("/a/arel", "GET")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -436,7 +436,7 @@ func TestslugColorOperator2(t *testing.T) {
 			t.Fatal("slug Testing, invalslug match (second)")
 		}
 	}
-	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	testReq4 := requestish("/a/123arel", "GET")
 	tc4 := newTestContext(testReq4)
 	r.Match(testReq4)(tc4)
 	if atc, ok := tc4.Renderable.(*testContext); ok {
@@ -444,7 +444,7 @@ func TestslugColorOperator2(t *testing.T) {
 			t.Fatal("slug Testing, invalslug match (third)")
 		}
 	}
-	testReq5 := &testRequestish{path: "/a/123arel/t/asdf", method: "GET"}
+	testReq5 := requestish("/a/123arel/t/asdf", "GET")
 	tc5 := newTestContext(testReq5)
 	r.Match(testReq5)(tc5)
 	if atc, ok := tc5.Renderable.(*testContext); ok {
@@ -460,7 +460,7 @@ func TestnameColorOperator2(t *testing.T) {
 		ctx.Render("name testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -469,7 +469,7 @@ func TestnameColorOperator2(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123abcef", method: "GET"}
+	testReq2 := requestish("/a/123abcef", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -477,7 +477,7 @@ func TestnameColorOperator2(t *testing.T) {
 			t.Fatal("name Testing, valname match")
 		}
 	}
-	testReq3 := &testRequestish{path: "/a/arel", method: "GET"}
+	testReq3 := requestish("/a/arel", "GET")
 	tc3 := newTestContext(testReq3)
 	r.Match(testReq3)(tc3)
 	if atc, ok := tc3.Renderable.(*testContext); ok {
@@ -485,7 +485,7 @@ func TestnameColorOperator2(t *testing.T) {
 			t.Fatal("name Testing, invalname match (second)")
 		}
 	}
-	testReq4 := &testRequestish{path: "/a/123arel", method: "GET"}
+	testReq4 := requestish("/a/123arel", "GET")
 	tc4 := newTestContext(testReq4)
 	r.Match(testReq4)(tc4)
 	if atc, ok := tc4.Renderable.(*testContext); ok {
@@ -493,7 +493,7 @@ func TestnameColorOperator2(t *testing.T) {
 			t.Fatal("name Testing, invalname match (third)")
 		}
 	}
-	testReq5 := &testRequestish{path: "/a/123arel/t/asdf", method: "GET"}
+	testReq5 := requestish("/a/123arel/t/asdf", "GET")
 	tc5 := newTestContext(testReq5)
 	r.Match(testReq5)(tc5)
 	if atc, ok := tc5.Renderable.(*testContext); ok {
@@ -509,7 +509,7 @@ func TestRoot(t *testing.T) {
 		ctx.Render("root testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -518,7 +518,7 @@ func TestRoot(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/a/123abcef", method: "GET"}
+	testReq2 := requestish("/a/123abcef", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -536,7 +536,7 @@ func BasicNamespaceTest(t *testing.T) {
 		ctx.Render("namespace testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -545,7 +545,7 @@ func BasicNamespaceTest(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/what/", method: "GET"}
+	testReq2 := requestish("/what/", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {
@@ -562,7 +562,7 @@ func BasicNamespaceGetTest(t *testing.T) {
 		ctx.Render("namespace get testing", nil)
 	})
 
-	testReq1 := &testRequestish{path: "/", method: "GET"}
+	testReq1 := requestish("/", "GET")
 	tc1 := newTestContext(testReq1)
 	r.Match(testReq1)(tc1)
 	if atc, ok := tc1.Renderable.(*testContext); ok {
@@ -571,7 +571,7 @@ func BasicNamespaceGetTest(t *testing.T) {
 		}
 	}
 
-	testReq2 := &testRequestish{path: "/what/now", method: "GET"}
+	testReq2 := requestish("/what/now", "GET")
 	tc2 := newTestContext(testReq2)
 	r.Match(testReq2)(tc2)
 	if atc, ok := tc2.Renderable.(*testContext); ok {

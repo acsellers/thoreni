@@ -2,10 +2,12 @@ package router
 
 import (
 	"github.com/acsellers/thoreni"
+	"net/http"
+	"net/url"
 )
 
-func newTestContext(req thoreni.Requestish) *thoreni.Contextable {
-	return &thoreni.Contextable{Renderable: new(testContext), Requestish: req}
+func newTestContext(req *http.Request) *thoreni.Contextable {
+	return &thoreni.Contextable{Renderable: new(testContext), Request: req}
 }
 
 type testContext struct {
@@ -25,13 +27,8 @@ func (t *testContext) Redirect(s string) {
 	t.rendered = s
 }
 
-type testRequestish struct {
-	path, method string
-}
-
-func (tr testRequestish) Path() string {
-	return tr.path
-}
-func (tr testRequestish) Method() string {
-	return tr.method
+func requestish(path, method string) *http.Request {
+	req := http.Request{Method: method}
+	req.URL = &url.URL{Path: path}
+	return &req
 }

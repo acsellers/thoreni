@@ -2,7 +2,7 @@
 package router
 
 import (
-	"github.com/acsellers/thoreni"
+	"net/http"
 )
 
 // Router is an HTTP request router, that takes existing net/http methods and paradigms and 
@@ -27,7 +27,7 @@ type Router struct {
 }
 
 type Routable interface {
-	Match(req thoreni.Requestish) RoutingFunc
+	Match(req *http.Request) RoutingFunc
 }
 
 // NewRouter returns a new Router
@@ -43,7 +43,7 @@ func NewRouter() *Router {
 // Match will use the Router's tree of routes to find the correct route and returns the function 
 // that corresponds to the correct route. The execution time will vary along with the number of
 // routes defined.
-func (router *Router) Match(req thoreni.Requestish) RoutingFunc {
+func (router *Router) Match(req *http.Request) RoutingFunc {
 	matchingResponses := make([]*Endpoint, 0)
 	if response, found := router.root.RespondsTo(req); found {
 		matchingResponses = append(matchingResponses, response...)

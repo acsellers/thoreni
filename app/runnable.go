@@ -1,26 +1,31 @@
 package app
 
 import (
+	"github.com/acsellers/thoreni"
 	"github.com/acsellers/thoreni/render"
 	"github.com/acsellers/thoreni/router"
+	"net/http"
 )
 
 type RunnableApp struct {
 	Routing   Routable
-	Templates Templateable
+	Templates thoreni.Renderable
 }
 
 type Routable interface {
-	Match(req Requestish) RoutingFunc
+	Match(req *http.Request) router.RoutingFunc
 }
 
-type Templateable interface {
-	RenderTemplate(string, string, interface{}) (string, string, string)
-	RenderStatic(string, string, interface{}) (string, string, string)
-	Layout(string)
-	Redirect(string)
+func (r RunnableApp) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	renderer := render.NewRequestRenderer()
+	renderer.Output = w
+	renderer.Request = req
+	contextable := &thoreni.Contextable{LocalRenderer: renderer, Request: req}
+	r.Routing.Match(req)(contextable)
 }
 
-func Run(user_app *Runnable) {
-
+func ListenAndServe(user_app *RunnableApp, port string) error {
+	http.DefaultServeMux = http.NewServeMux()
+	http.Handle("/", user_app)
+	return http.ListenAndServe(port, nil)
 }

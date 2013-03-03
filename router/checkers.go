@@ -1,7 +1,7 @@
 package router
 
 import "fmt"
-import "github.com/acsellers/thoreni"
+import "net/http"
 import "regexp"
 import "strings"
 
@@ -17,8 +17,8 @@ var colonChecker = regexp.MustCompile(":id|:key|:slug|:name")
 // Surety actions can be slower. Exact method matchers will rank 1 higher than matches on the any 
 // method, we do this by doubling the length of the match.
 type MatchChecker interface {
-	RespondsTo(thoreni.Requestish) bool
-	Surety(thoreni.Requestish) int
+	RespondsTo(*http.Request) bool
+	Surety(*http.Request) int
 }
 
 type SimpleChecker struct {
@@ -26,10 +26,14 @@ type SimpleChecker struct {
 	method  string
 }
 
-func (sc SimpleChecker) RespondsTo(rq thoreni.Requestish) bool {
-	return (rq.Method() == sc.method || sc.method == "*") && strings.HasPrefix(rq.Path(), sc.pattern)
+func path(rq *http.Request) string {
+	return rq.URL.Path
 }
-func (sc SimpleChecker) Surety(rq thoreni.Requestish) int {
+
+func (sc SimpleChecker) RespondsTo(rq *http.Request) bool {
+	return (rq.Method == sc.method || sc.method == "*") && strings.HasPrefix(path(rq), sc.pattern)
+}
+func (sc SimpleChecker) Surety(rq *http.Request) int {
 	strength := 1
 	if sc.method == "*" {
 		strength = 0
@@ -52,13 +56,13 @@ func NewRegexChecker(method, requestRegex string) *RegexChecker {
 	return rc
 }
 
-func (rc RegexChecker) RespondsTo(rq thoreni.Requestish) bool {
-	return (rc.method == rq.Method() || rc.method == "*") && rc.regex.MatchString(rq.Path())
+func (rc RegexChecker) RespondsTo(rq *http.Request) bool {
+	return (rc.method == rq.Method || rc.method == "*") && rc.regex.MatchString(path(rq))
 }
 
 //TODO: this is not taking into account the matched length, fix when we start dealing with the regex
-func (rc RegexChecker) Surety(rq thoreni.Requestish) int {
-	return len(rc.regex.FindString(rq.Path()))*2 + 1
+func (rc RegexChecker) Surety(rq *http.Request) int {
+	return len(rc.regex.FindString(path(rq)))*2 + 1
 }
 
 func ReplaceColonOperators(pre string) (post string) {
@@ -79,13 +83,13 @@ type RootChecker struct {
 	normalizedName string
 }
 
-func (rc RootChecker) RespondsTo(rq thoreni.Requestish) bool {
-	if rq.Path() == rc.normalizedName || rq.Path() == rc.normalizedName+"/" {
+func (rc RootChecker) RespondsTo(rq *http.Request) bool {
+	if path(rq) == rc.normalizedName || path(rq) == rc.normalizedName+"/" {
 		return true
 	}
 	return false
 }
 
-func (rc RootChecker) Surety(rq thoreni.Requestish) int {
+func (rc RootChecker) Surety(rq *http.Request) int {
 	return 1
 }
