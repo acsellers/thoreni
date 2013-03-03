@@ -1,7 +1,7 @@
 package thoreni
 
 import (
-	"github.com/acsellers/thoreni/logger"
+	"github.com/acsellers/thoreni/logging"
 	"net/http"
 )
 
