@@ -1,12 +1,14 @@
 package thoreni
 
 import (
+	"github.com/acsellers/thoreni/logger"
 	"net/http"
 )
 
 type Contextable struct {
 	LocalRenderer
 	Request *http.Request
+	Logger  *logging.MiniLogger
 }
 
 type LocalRenderer interface {

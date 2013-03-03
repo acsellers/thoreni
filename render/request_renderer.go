@@ -2,6 +2,7 @@ package render
 
 import (
 	"fmt"
+	"github.com/acsellers/thoreni/logging"
 	"net/http"
 )
 
@@ -11,6 +12,7 @@ type RequestRenderer struct {
 	Output     http.ResponseWriter
 	Request    *http.Request
 	RenderData interface{}
+	Logger     *logging.MiniLogger
 }
 
 func NewRequestRenderer() *RequestRenderer {
