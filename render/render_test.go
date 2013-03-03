@@ -76,7 +76,7 @@ func TestRenderStaticError(t *testing.T) {
 	mrw := newMockResponseWriter()
 	rr.Output = mrw
 	rr.RenderStatic("test")
-	if string(mrw.buffer.Bytes()) != "Template render error" {
+	if string(mrw.buffer.Bytes()) != "Content render error" {
 		t.Fatalf("Exepecting 'Template Render Error' , was '%s'", string(mrw.buffer.Bytes()))
 	}
 }

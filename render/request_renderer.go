@@ -29,7 +29,7 @@ func (r RequestRenderer) Render(templateName string) {
 		} else {
 			if content == "" {
 				//TODO write some kind of sorta 500 error
-				fmt.Fprint(r.Output, "Template render error")
+				fmt.Fprint(r.Output, "Content render error")
 			} else {
 				fmt.Fprint(r.Output, top, content, bottom)
 			}
@@ -47,7 +47,7 @@ func (r RequestRenderer) RenderStatic(templateName string) {
 		} else {
 			if content == "" {
 				//TODO write some kind of sorta 500 error
-				fmt.Fprint(r.Output, "Template render error")
+				fmt.Fprint(r.Output, "Content render error")
 			} else {
 				fmt.Fprint(r.Output, top, content, bottom)
 			}

@@ -35,7 +35,7 @@ func NewRendererFromLists(layoutList, viewList []string) {
 	r.renderedStatics = make(map[string]string)
 
 	MasterRenderer = r
-
+	//TODO return r
 }
 
 func AddFolder(templatePath string) {
