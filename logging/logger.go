@@ -74,16 +74,19 @@ func NewMiniLogger() *MiniLogger {
 func (ml *MiniLogger) LogRequest(req *http.Request) {
 	ml.Begun = time.Now()
 	ml.Data += fmt.Sprintf(REQUEST_INFO, req.Method, req.RequestURI, req.RemoteAddr, ml.Begun.Format(LOGTIME))
+	ml.Data += "\n"
 }
 
 func (ml *MiniLogger) Write(things ...interface{}) {
-	ml.Data += fmt.Sprint(things...)
+	ml.Data += fmt.Sprintln(things...)
 }
 func (ml *MiniLogger) Writef(formatString string, things ...interface{}) {
 	ml.Data += fmt.Sprintf(formatString, things...)
+	ml.Data += "\n"
 }
 func (ml *MiniLogger) CloseRequest(responseType string) {
 	ml.Data += fmt.Sprintf(REQUEST_CLOSE, time.Since(ml.Begun))
+	ml.Data += "\n"
 }
 func (ml MiniLogger) Flush() {
 	fmt.Println(ml.Data)
