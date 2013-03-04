@@ -91,9 +91,9 @@ func (ml MiniLogger) Flush() {
 }
 func init() {
 	Log = new(Logger)
-	determineOutput()
 	Log.input = make(chan string)
 	go Log.watch()
+	determineOutput()
 }
 
 func determineOutput() {
