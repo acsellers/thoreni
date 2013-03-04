@@ -89,7 +89,6 @@ func (ml *MiniLogger) CloseRequest(responseType string) {
 	ml.Data += "\n"
 }
 func (ml MiniLogger) Flush() {
-	fmt.Println(ml.Data)
 	ml.Parent.Write(ml.Data)
 	ml.Parent.Write("")
 }
