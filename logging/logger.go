@@ -101,7 +101,7 @@ func init() {
 
 func determineOutput() {
 	pwd, err := os.Getwd()
-	if err != nil {
+	if err == nil {
 		maybeLogDirectory, err := os.Stat(filepath.Join(pwd, "log"))
 		if err == nil {
 			if maybeLogDirectory.IsDir() {
