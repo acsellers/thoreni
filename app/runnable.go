@@ -23,7 +23,6 @@ func (r RunnableApp) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	renderer.Request = req
 
 	miniLogger := logging.NewMiniLogger()
-	defer miniLogger.Flush()
 
 	miniLogger.LogRequest(req)
 
@@ -31,6 +30,7 @@ func (r RunnableApp) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.Routing.Match(req)(contextable)
 	//TODO add bit to find response type
 	miniLogger.CloseRequest("")
+	miniLogger.Flush()
 }
 
 func ListenAndServe(user_app *RunnableApp, port string) error {

@@ -11,7 +11,7 @@ import (
 
 var (
 	LOGTIME       = "2006-01-02 15:04:05 -0700"
-	REQUEST_INFO  = "Started %s %s for %s at %s"
+	REQUEST_INFO  = "Started %s \"%s\" for %s at %s"
 	REQUEST_CLOSE = "Rendered SOMETHING in %ins"
 	Log           *Logger
 )
@@ -86,6 +86,7 @@ func (ml *MiniLogger) CloseRequest(responseType string) {
 	ml.Data += fmt.Sprintf(REQUEST_CLOSE, time.Since(ml.Begun))
 }
 func (ml MiniLogger) Flush() {
+	fmt.Println(ml.Data)
 	ml.Parent.Write(ml.Data)
 	ml.Parent.Write("")
 }
