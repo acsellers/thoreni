@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 )
 
@@ -33,8 +32,8 @@ and would perfer the text to be uniterrupted.
 */
 type Logger struct {
 	Output            *log.Logger
+	input             chan string
 	ActiveMiniLoggers []*MiniLogger
-	writingLock       *sync.Mutex
 }
 
 // Logger.Write writes data to the output directly, without regular 
@@ -43,18 +42,21 @@ type Logger struct {
 // for a subsystem. Strings do not need a newline, this one acts like
 // Println instead of Print.
 func (log *Logger) Write(data ...interface{}) {
-	log.writingLock.Lock()
-	log.Output.Println(data...)
-	log.writingLock.Unlock()
+	log.input <- fmt.Sprint(data...)
 }
 
 // Logger.Writef is the same as Write, except it acts like Printf
 // instead of just Printing. Note: you do not need to add a newline
 // to your format string, Logger does it automatically.
 func (log *Logger) Writef(template string, data ...interface{}) {
-	log.writingLock.Lock()
-	log.Output.Printf(template+"\n", data...)
-	log.writingLock.Unlock()
+	log.input <- fmt.Sprintf(template+"\n", data...)
+}
+
+func (log *Logger) watch() {
+	for {
+		output := <-log.input
+		log.Output.Println(output)
+	}
 }
 
 type MiniLogger struct {
@@ -90,7 +92,8 @@ func (ml MiniLogger) Flush() {
 func init() {
 	Log = new(Logger)
 	determineOutput()
-	Log.writingLock = new(sync.Mutex)
+	Log.input = make(chan string)
+	go Log.watch()
 }
 
 func determineOutput() {
