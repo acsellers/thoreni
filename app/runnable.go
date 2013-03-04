@@ -29,7 +29,8 @@ func (r RunnableApp) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	contextable := &thoreni.Contextable{LocalRenderer: renderer, Request: req, Logger: miniLogger}
 	r.Routing.Match(req)(contextable)
-	miniLogger.CloseRequest(contextable)
+	//TODO add bit to find response type
+	miniLogger.CloseRequest("")
 }
 
 func ListenAndServe(user_app *RunnableApp, port string) error {
