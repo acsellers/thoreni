@@ -12,7 +12,7 @@ import (
 var (
 	LOGTIME       = "2006-01-02 15:04:05 -0700"
 	REQUEST_INFO  = "Started %s \"%s\" for %s at %s"
-	REQUEST_CLOSE = "Rendered SOMETHING in %ins"
+	REQUEST_CLOSE = "Rendered SOMETHING in %dns"
 	Log           *Logger
 )
 
