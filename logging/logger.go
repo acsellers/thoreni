@@ -89,7 +89,8 @@ func (ml MiniLogger) Flush() {
 }
 func init() {
 	Log = new(Logger)
-
+	determineOutput()
+	Log.writingLock = new(sync.Mutex)
 }
 
 func determineOutput() {
