@@ -27,7 +27,7 @@ func (r RunnableApp) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	miniLogger.LogRequest(req)
 
-	contextable := &thoreni.Contextable{LocalRenderer: renderer, Request: req, Logger, miniLogger}
+	contextable := &thoreni.Contextable{LocalRenderer: renderer, Request: req, Logger: miniLogger}
 	r.Routing.Match(req)(contextable)
 	miniLogger.CloseRequest(contextable)
 }
