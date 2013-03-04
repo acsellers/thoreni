@@ -22,7 +22,7 @@ func (r RunnableApp) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	renderer.Output = w
 	renderer.Request = req
 
-	miniLogger := NewMiniLogger()
+	miniLogger := logging.NewMiniLogger()
 	defer miniLogger.Flush()
 
 	miniLogger.LogRequest(req)
