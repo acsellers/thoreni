@@ -85,7 +85,7 @@ func (ml *MiniLogger) Writef(formatString string, things ...interface{}) {
 	ml.Data += "\n"
 }
 func (ml *MiniLogger) CloseRequest(responseType string) {
-	ml.Data += fmt.Sprintf(REQUEST_CLOSE, time.Since(ml.Begun))
+	ml.Data += fmt.Sprintf(REQUEST_CLOSE, time.Since(ml.Begun).Nanoseconds())
 	ml.Data += "\n"
 }
 func (ml MiniLogger) Flush() {
